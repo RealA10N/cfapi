@@ -14,13 +14,17 @@ class Base(ABC):
 
     BASE_URL = "https://codeforces.com/"
 
+    def __init__(self, identifier) -> None:
+        self.__id = identifier
+
+    @property
+    def identifier(self):
+        """A unique identifier that is used to generaate the content URL."""
+        return self.__id
+
     @abstractproperty
     def url(self):
         """The URL to the page where the information is scraped from."""
-
-    @abstractproperty
-    def identifier(self):
-        """A unique identifier that is used to generaate the content URL."""
 
     @property
     @cache
