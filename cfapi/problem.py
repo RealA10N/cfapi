@@ -12,10 +12,10 @@ if TYPE_CHECKING:
 class Problem(Base):
 
     _FROM_URL_REGEX = re.compile(
-        "/(?P<setid>[0-9]+)(/.*)*/(?P<problemid>[a-zA-Z][0-9]?)"
+        "/(?P<setid>[0-9]+)(/.*)*/(?P<problemid>[a-zA-Z]+[0-9]*)"
     )
     _SPLIT_IDENTIFIER_REGEX = re.compile(
-        "(?P<setid>[0-9]+)(?P<problemid>[a-zA-Z][0-9]?)"
+        "(?P<setid>[0-9]+)(?P<problemid>[a-zA-Z]+[0-9]*)"
     )
 
     @classmethod
