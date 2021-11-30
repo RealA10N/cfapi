@@ -1,13 +1,27 @@
-from abc import ABC, abstractproperty
+from abc import ABC, abstractmethod
 from functools import lru_cache as cache
 
 import requests
 from bs4 import BeautifulSoup
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Type, TypeVar
+    from re import Pattern
+
+    T = TypeVar("T")
+
+
 class InvalidIdentifierException(ValueError):
     """Raised when trying to load data from an invalid URL (probably because the
     data doesn't exist or isn't public)."""
+
+
+class InvalidURL(ValueError):
+    """Raised when typing to load a data using a given URL, but the URL isn't a
+    valid one."""
 
 
 class Base(ABC):
@@ -22,7 +36,27 @@ class Base(ABC):
         """A unique identifier that is used to generaate the content URL."""
         return self.__id
 
-    @abstractproperty
+    @abstractmethod
+    @property
+    @classmethod
+    def FROM_URL_REGEX(cls) -> "Pattern":
+        """A pattern that contains a group named 'id'. This pattern should be
+        able to accept all valid URLs of the current object."""
+
+    @classmethod
+    def from_url(cls: "Type[T]", url: str) -> "T":
+        """Recives a URL as a string, and returns an instance of the of API
+        object that represents the information in the given URL."""
+
+        result = cls.FROM_URL_REGEX.search(url)
+
+        if result:
+            return cls(result.group("id"))
+        else:
+            raise InvalidURL(f"Invalid URL {url!r} for {cls.__name__!r}")
+
+    @abstractmethod
+    @property
     def url(self):
         """The URL to the page where the information is scraped from."""
 
