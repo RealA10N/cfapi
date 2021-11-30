@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
+from .exceptions import InvalidIdentifierException, InvalidURL
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -12,16 +14,6 @@ if TYPE_CHECKING:
     from re import Pattern
 
     T = TypeVar("T")
-
-
-class InvalidIdentifierException(ValueError):
-    """Raised when trying to load data from an invalid URL (probably because the
-    data doesn't exist or isn't public)."""
-
-
-class InvalidURL(ValueError):
-    """Raised when typing to load a data using a given URL, but the URL isn't a
-    valid one."""
 
 
 class Base(ABC):
