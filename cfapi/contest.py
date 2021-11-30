@@ -13,9 +13,8 @@ if TYPE_CHECKING:
 
 
 class Contest(Base):
-    # TODO: Contest, ProblemSet, and GroupContest should all share the same base class.
 
-    _FROM_URL_REGEX = re.compile("contests?/(?P<id>[0-9]{1,})")
+    _FROM_URL_REGEX = re.compile("(contest|gym)/(?P<id>[0-9]+)")
 
     @classmethod
     def identifier_from_url(cls, url: str) -> "Optional[int]":
@@ -26,6 +25,9 @@ class Contest(Base):
     @property
     def url(self) -> str:
         """The URL to the page where the information is scraped from."""
+
+        # If it is a gym and not a contest, we will be redirected to the
+        # correct url. Thus, 'contest/' can be hardcoded
         return urljoin(self.BASE_URL, f"contest/{self.identifier}")
 
     @property
