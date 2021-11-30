@@ -1,3 +1,6 @@
-from .contest import Contest  # noqa: F401
-from .profile import Profile  # noqa: F401
-from .problem import Problem  # noqa: F401
+from .contest import Contest
+from .profile import Profile
+from .problem import Problem
+from .funcs import from_url
+
+__all__ = ["Contest", "Profile", "Problem", "from_url"]
