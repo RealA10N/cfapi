@@ -10,8 +10,7 @@ from .exceptions import InvalidIdentifierException, InvalidURL
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Type, TypeVar
-    from re import Pattern
+    from typing import Type, TypeVar, Optional
 
     T = TypeVar("T")
 
@@ -20,35 +19,33 @@ class Base(ABC):
 
     BASE_URL = "https://codeforces.com/"
 
-    def __init__(self, identifier) -> None:
+    def __init__(self, identifier: "T") -> None:
         self.__id = identifier
 
     @property
-    def identifier(self):
+    def identifier(self) -> "T":
         """A unique identifier that is used to generaate the content URL."""
         return self.__id
 
-    @abstractmethod
-    @property
     @classmethod
-    def FROM_URL_REGEX(cls) -> "Pattern":
-        """A pattern that contains a group named 'id'. This pattern should be
-        able to accept all valid URLs of the current object."""
+    @abstractmethod
+    def identifier_from_url(cls, url: str) -> "Optional[T]":
+        """Returns the identifier from the given url. If the identifier can't be
+        found, returns None."""
 
     @classmethod
     def from_url(cls: "Type[T]", url: str) -> "T":
         """Recives a URL as a string, and returns an instance of the of API
         object that represents the information in the given URL."""
 
-        result = cls.FROM_URL_REGEX.search(url)
-
-        if result:
-            return cls(result.group("id"))
-        else:
+        result = cls.identifier_from_url(url)
+        if result is None:
             raise InvalidURL(f"Invalid URL {url!r} for {cls.__name__!r}")
+        else:
+            return cls(result)
 
-    @abstractmethod
     @property
+    @abstractmethod
     def url(self):
         """The URL to the page where the information is scraped from."""
 
@@ -67,3 +64,6 @@ class Base(ABC):
             )
 
         return BeautifulSoup(data.content, "lxml")
+
+    def __repr__(self):
+        return f"<{type(self).__name__} {self.identifier}>"
