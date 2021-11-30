@@ -59,7 +59,7 @@ class Base(ABC):
         data = requests.get(self.url, allow_redirects=False)
         if data.status_code != 200:
             raise InvalidIdentifierException(
-                f"Invalid identifier {self.identifier!r} for {type(self).__name__!r}",
+                f"Invalid identifier {self.identifier!r} for {type(self).__name__!r} "
                 "(Resource doesn't exist or isn't public).",
             )
 
