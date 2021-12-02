@@ -44,3 +44,7 @@ class Contest(Base):
         rows = self._problems_table.find_all("tr")[1:]
         links = [row.find("a", href=True)["href"] for row in rows]
         return tuple(Problem.from_url(link) for link in links)
+
+    @property
+    def name(self) -> str:
+        return self.data.find("table", {"class": "rtable"}).find("a").get_text()
